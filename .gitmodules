@@ -4,3 +4,6 @@
 [submodule "graphed-corpus"]
 	path = graphed-corpus
 	url = git@github.com:graphed-org/graphed-corpus.git
+[submodule "graphed-core"]
+	path = graphed-core
+	url = git@github.com:graphed-org/graphed-core.git
