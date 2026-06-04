@@ -7,3 +7,9 @@
 [submodule "graphed-core"]
 	path = graphed-core
 	url = git@github.com:graphed-org/graphed-core.git
+[submodule "graphed"]
+	path = graphed
+	url = git@github.com:graphed-org/graphed.git
+[submodule "graphed-numpy"]
+	path = graphed-numpy
+	url = git@github.com:graphed-org/graphed-numpy.git
