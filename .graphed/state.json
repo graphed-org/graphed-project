@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "project": "graphed",
+  "org": "graphed-org",
+  "meta_repo": "graphed-project",
+  "pipeline_status": "PENDING",
+  "updated_at": "2026-06-04T15:08:26Z",
+  "note": "Project-level rollup. Authoritative per-repo detail lives in each repo's .graphed/state.json. See .graphed/SCHEMA.md for the update discipline. The pipeline cannot RUN any milestone until graphed-orchestrator is built and its B.8 faker suite is green.",
+  "global_breakers": {
+    "cumulative_tokens_spent": 0,
+    "cumulative_tokens_cap": null,
+    "consecutive_pauses": 0,
+    "consecutive_pauses_cap": 2,
+    "tripped": false
+  },
+  "current_milestone": null,
+  "phases": ["PENDING", "DECOMPOSE", "TEST_AUTHORING", "TEST_SANITY", "FROZEN", "IMPLEMENTING", "REVIEW", "DONE"],
+  "side_states": ["TEST_DISPUTE", "ESCALATED", "PAUSED", "ABORTED"],
+  "repos": {
+    "graphed-project": {"role": "meta/superproject", "created": true, "visibility": "public", "is_submodule": false},
+    "graphed-orchestrator": {"role": "Part B deterministic orchestrator", "created": true, "visibility": "public", "is_submodule": true},
+    "graphed-corpus": {"role": "M0.5 requirements + fixtures", "created": true, "visibility": "public", "is_submodule": true},
+    "graphed-core": {"role": "M1/M4/M7-contract/M8-plan", "created": false, "visibility": null, "is_submodule": false},
+    "graphed": {"role": "M2/M3 frontend", "created": false, "visibility": null, "is_submodule": false},
+    "graphed-awkward": {"role": "M3/M5 reference backend", "created": false, "visibility": null, "is_submodule": false},
+    "graphed-numpy": {"role": "M2 trivial backend", "created": false, "visibility": null, "is_submodule": false},
+    "graphed-debug": {"role": "M6 debug/tracebacks", "created": false, "visibility": null, "is_submodule": false},
+    "graphed-exec-local": {"role": "M7 reference executor", "created": false, "visibility": null, "is_submodule": false},
+    "graphed-checkpoint": {"role": "M8 checkpoint/resume", "created": false, "visibility": null, "is_submodule": false},
+    "graphed-preserve": {"role": "M9 preservation bundle", "created": false, "visibility": null, "is_submodule": false}
+  },
+  "milestones": {
+    "ORCH": {"title": "Deterministic orchestrator engine (Part B + B.8 faker suite)", "repos": ["graphed-orchestrator"], "status": "PENDING", "phase": "PENDING", "blocks": ["any milestone RUN"], "blocked_on": null, "iterations_cap": null},
+    "M0":   {"title": "Repository spine (per repo)", "repos": ["all"], "status": "PENDING", "phase": "PENDING", "blocked_on": null, "iterations_cap": 8},
+    "M0.5": {"title": "Reference corpus study & Required Operations Catalog", "repos": ["graphed-corpus"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M0:graphed-corpus"], "iterations_cap": 6},
+    "M1":   {"title": "graphed-core thread-safe interned graph IR", "repos": ["graphed-core"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M0.5"], "iterations_cap": 12},
+    "M2":   {"title": "frontend + backend protocol + graphed-numpy", "repos": ["graphed", "graphed-numpy"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M1"], "iterations_cap": 10},
+    "M3":   {"title": "graphed-awkward typetracer forms + provenance", "repos": ["graphed-awkward", "graphed"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M2"], "iterations_cap": 12},
+    "M4":   {"title": "graphed-core optimizer: DCE/CSE + equality-saturation stage fusion", "repos": ["graphed-core"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M3"], "iterations_cap": 16},
+    "M5":   {"title": "Necessary-buffer (column) projection", "repos": ["graphed-awkward", "graphed-numpy"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M4"], "iterations_cap": 10},
+    "M6":   {"title": "graphed-debug: opt-level lowering, source-mapped tracebacks, viz", "repos": ["graphed-debug"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M5"], "iterations_cap": 10},
+    "M7":   {"title": "Execution-layer contract + graphed-exec-local", "repos": ["graphed-exec-local", "graphed-core"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M6"], "iterations_cap": 16},
+    "M8":   {"title": "graphed-checkpoint: plan serialization + checkpoint/resume", "repos": ["graphed-checkpoint", "graphed-core"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M7"], "iterations_cap": 12},
+    "M9":   {"title": "graphed-preserve: analysis preservation bundle", "repos": ["graphed-preserve"], "status": "PENDING", "phase": "PENDING", "blocked_on": ["M8"], "iterations_cap": 14}
+  },
+  "infrastructure_done": [
+    "graphed-org org exists",
+    "graphed-project/graphed-orchestrator/graphed-corpus repos created and public",
+    "meta repo wired with 2 submodules",
+    "root + 2 sub-repo CLAUDE.md distilled"
+  ]
+}
