@@ -4,8 +4,8 @@
   "org": "graphed-org",
   "meta_repo": "graphed-project",
   "pipeline_status": "RUNNING",
-  "updated_at": "2026-06-05T01:30:00Z",
-  "note": "Project-level rollup. Authoritative per-repo detail in each repo's .graphed/state.json (see SCHEMA.md). ORCH, M0 (6 repos), M0.5, M1, M2, M3, M4, M5 DONE and CI-green. M5: necessary-buffer column projection (reporting typetracer + numpy field-touch tracking), over-touch protected. Next: M6 (graphed-debug).",
+  "updated_at": "2026-06-05T03:00:00Z",
+  "note": "Project-level rollup. Authoritative per-repo detail in each repo's .graphed/state.json (see SCHEMA.md). ORCH, M0 (6 repos), M0.5, M1, M2, M3, M4, M5 DONE and CI-green. M5: necessary-buffer column projection (reporting typetracer + numpy field-touch tracking), over-touch protected. Orchestrator hardened with a CI-confirmation gate (DONE requires the pinned commit's CI green; in_progress != green). Next: M6 (graphed-debug).",
   "global_breakers": {
     "cumulative_tokens_spent": 0,
     "cumulative_tokens_cap": null,
@@ -111,7 +111,7 @@
       ],
       "blocked_on": null,
       "iterations_cap": null,
-      "evidence": "41 frozen tests, 97% line+branch coverage, mypy --strict clean, CI green on A.5 matrix incl. 3.13t/3.14/3.14t"
+      "evidence": "41 frozen tests, 97% line+branch coverage, mypy --strict clean, CI green on A.5 matrix incl. 3.13t/3.14/3.14t [2026-06-05] Hardened: added a CI-confirmation gate (GateReport.ci/done_ready) so a milestone can never be recorded DONE off an unfinished CI run (in_progress counts as not-green); review() holds in REVIEW with an 'awaiting_ci' signal until the EXACT pinned commit's CI is verified. New ci.py + scripts/confirm_ci.py (pure-Python, replaces shell gh-watch loops and the zsh word-split bug). 54 frozen tests; re-validated via the new confirm-on-pinned-commit flow."
     },
     "M0": {
       "title": "Repository spine (per repo)",
