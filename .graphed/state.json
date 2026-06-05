@@ -5,7 +5,7 @@
   "meta_repo": "graphed-project",
   "pipeline_status": "RUNNING",
   "updated_at": "2026-06-05T19:36:01Z",
-  "note": "Project-level rollup. ORCH, M0 (8 repos), M0.5, M1, M2, M3, M4, M5, M6, M7 DONE and CI-green. M7: execution layer (graphed-core contract + graphed-exec-local with BOTH thread-pool and process-pool executors, deterministic straggler-tolerant tree reduction, open_once, adaptive reshaping, remote StageError via M6; AGC/MET bit-for-bit over partitions). Next: M8 (graphed-checkpoint \u2014 plan serialization + content-addressed checkpoint/resume).",
+  "note": "Project-level rollup. ORCH, M0 (9 repos), M0.5, M1\u2013M8 DONE and CI-green. M8: graphed-core gained versioned/byte-identical IR serialization (GIR1) + content-addressed DurablePlan (task_id cache-poisoning-safe; cloudpickle only for opaque callables flagged opaque=True); new graphed-checkpoint repo adds the content-addressed Store (atomic blobs + append-only journal + dead-letter), a deterministic resumable runner (kill+resume bit-for-bit, no double-count/no lost partition, measurably less work), retry policies (retry_n/retry_smaller_chunk/retry_elsewhere/quarantine) + error budget, and runs a serialized plan with no source files. Next: M9 (graphed-preserve \u2014 analysis preservation bundle).",
   "global_breakers": {
     "cumulative_tokens_spent": 0,
     "cumulative_tokens_cap": null,
@@ -13,7 +13,7 @@
     "consecutive_pauses_cap": 2,
     "tripped": false
   },
-  "current_milestone": "M8",
+  "current_milestone": "M9",
   "phases": [
     "PENDING",
     "DECOMPOSE",
@@ -87,9 +87,9 @@
     },
     "graphed-checkpoint": {
       "role": "M8 checkpoint/resume",
-      "created": false,
-      "visibility": null,
-      "is_submodule": false
+      "created": true,
+      "visibility": "private",
+      "is_submodule": true
     },
     "graphed-preserve": {
       "role": "M9 preservation bundle",
@@ -119,13 +119,14 @@
         "graphed-orchestrator (DONE)",
         "graphed-corpus (DONE)",
         "graphed-debug (DONE)",
-        "graphed-exec-local (DONE)"
+        "graphed-exec-local (DONE)",
+        "graphed-checkpoint (DONE)"
       ],
       "status": "DONE",
       "phase": "DONE",
       "blocked_on": null,
       "iterations_cap": 8,
-      "note": "DONE for both existing repos; replicated per-repo as new package repos are created"
+      "note": "DONE per-repo; replicated as each new package repo is created (latest: graphed-checkpoint M0 spine)"
     },
     "M0.5": {
       "title": "Reference corpus study & Required Operations Catalog",
@@ -226,11 +227,11 @@
         "graphed-checkpoint",
         "graphed-core"
       ],
-      "status": "PENDING",
-      "phase": "PENDING",
+      "status": "DONE",
+      "phase": "DONE",
       "blocked_on": null,
       "iterations_cap": 12,
-      "note": "next: graphed-checkpoint (+ graphed-core Plan serialization) \u2014 kill-and-resume bit-for-bit with less work; serialized plan runs with no source files; dead-letter/retry; byte-identical plan serialization"
+      "evidence": "graphed-core: GraphStore.serialize/deserialize = canonical versioned byte-identical IR (GIR1; round-trips incl. Stage nodes); DurablePlan wraps the IR + executor metadata (partitions/read_columns/reduction/stopping/locality/resource), versioned byte-identical to_bytes, content-addressed task_id (SHA-256 over IR + process spec + partition -> cache-poisoning-safe); OpSpec resolves callables by import-ref or, only for opaque callables, embeds by value (cloudpickle) flagged opaque=True; 21 frozen tests incl. runs-with-no-source-files; 97% cov. graphed-checkpoint (new repo): content-addressed Store (atomic temp+fsync+rename blobs, append-only journal tolerant of torn lines + missing-blob entries, append-only dead-letter); run_resumable skips completed task_ids and recombines per-task partials in deterministic order -> kill+resume equals an uninterrupted run BIT-FOR-BIT with no double-count/no lost partition and measurably less work; retry_n/retry_smaller_chunk (recovers a chunk too big to process whole)/retry_elsewhere/quarantine; error budget stop; dead-letter harvests M6 StageError provenance; serialized plan runs in a source-free subprocess; kill/resume on a real ADL-q1 MET analysis bit-for-bit. 26 frozen tests, 96% cov. ruff + mypy --strict + sphinx -W + cargo clippy/fmt clean; CI green on the A.5 matrix incl. 3.14/3.14t."
     },
     "M9": {
       "title": "graphed-preserve: analysis preservation bundle",

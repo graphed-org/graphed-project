@@ -22,3 +22,6 @@
 [submodule "graphed-exec-local"]
 	path = graphed-exec-local
 	url = git@github.com:graphed-org/graphed-exec-local.git
+[submodule "graphed-checkpoint"]
+	path = graphed-checkpoint
+	url = git@github.com:graphed-org/graphed-checkpoint.git
