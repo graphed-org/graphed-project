@@ -31,7 +31,7 @@ organization and replicates the M0 spine (per-package CI on the §A.5 matrix, wh
 | **M5** | ✅ DONE | graphed-awkward, graphed-numpy, graphed | Necessary-buffer (column) projection |
 | **M6** | ✅ DONE | graphed-debug | graphed-debug: opt-level lowering, source-mapped tracebacks, viz |
 | **M7** | ✅ DONE | graphed-exec-local, graphed-core | Execution-layer contract + graphed-exec-local |
-| **M8** | ✅ DONE | graphed-checkpoint, graphed-core | graphed-checkpoint: plan serialization + checkpoint/resume |
+| **M8** | ✅ DONE | graphed-checkpoint, graphed-core, graphed | graphed-checkpoint: plan serialization + checkpoint/resume |
 | **M9** | ⬜ PENDING | graphed-preserve | graphed-preserve: analysis preservation bundle |
 
 The development process is a **gated three-role pipeline** (test-author → implementer → reviewer)
@@ -44,10 +44,10 @@ the orchestrator refuses to record DONE off an unfinished CI run.
 | Repo | Role | Pinned commit | State |
 |---|---|---|:--:|
 | [graphed-project](https://github.com/graphed-org/graphed-project) | meta/superproject | — | meta |
-| [graphed](https://github.com/graphed-org/graphed) | M2/M3 frontend | `2402cd9` | ✅ submodule |
+| [graphed](https://github.com/graphed-org/graphed) | M2/M3 frontend | `7590631` | ✅ submodule |
 | [graphed-awkward](https://github.com/graphed-org/graphed-awkward) | M3/M5 reference backend | `27c1555` | ✅ submodule |
-| [graphed-checkpoint](https://github.com/graphed-org/graphed-checkpoint) | M8 checkpoint/resume | `c20a3ec` | ✅ submodule |
-| [graphed-core](https://github.com/graphed-org/graphed-core) | M1/M4/M7-contract/M8-plan | `0e2e806` | ✅ submodule |
+| [graphed-checkpoint](https://github.com/graphed-org/graphed-checkpoint) | M8 checkpoint/resume | `80d2dfa` | ✅ submodule |
+| [graphed-core](https://github.com/graphed-org/graphed-core) | M1/M4/M7-contract/M8-plan | `0614d24` | ✅ submodule |
 | [graphed-corpus](https://github.com/graphed-org/graphed-corpus) | M0.5 requirements + fixtures | `eebd14e` | ✅ submodule |
 | [graphed-debug](https://github.com/graphed-org/graphed-debug) | M6 debug/tracebacks | `bba6b77` | ✅ submodule |
 | [graphed-exec-local](https://github.com/graphed-org/graphed-exec-local) | M7 reference executor | `af5913f` | ✅ submodule |
