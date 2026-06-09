@@ -24,3 +24,18 @@ jobs:
         run: python -m pytest scripts/test_gen_readme.py scripts/test_bookkeep.py -v
       - name: README.md is in sync with .graphed/state.json
         run: python scripts/gen_readme.py --check
+
+  # M10 config-drift guard (findings B.4/B.5): every submodule's CI covers the A.5 matrix, builds
+  # wheel artifacts, and nothing push/PR-triggered can publish to PyPI.
+  workflow-matrix:
+    name: submodule workflows cover A.5 (no publish)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip pytest
+      - run: python -m pytest scripts/test_workflows.py -v
