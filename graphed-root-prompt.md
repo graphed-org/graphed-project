@@ -560,11 +560,18 @@ in-process), which would give a false appearance of parity without testing what 
   requires, and the per-partition read list MUST be **wired from the projection**, not maintained by
   hand — a test MUST pin that the executor's read set and the recorded graph's projection cannot
   drift apart.
-- **R15.4 (Deferred writing.)** The write entry point, with compute **disabled**, MUST return a
-  **task graph of write tasks** — each returning nothing and writing its own output partition — **not**
-  an array. With compute **enabled** it MUST execute that task graph through a real reference executor
-  (R7): the **process-pool executor by default**, with the thread-pool executor selectable. The two
-  modes MUST be consistent (the disabled mode's graph, when run, produces the enabled mode's outputs).
+- **R15.4 (Deferred writing — a specialization of the write base.)** The write entry point MUST be
+  built as a SPECIALIZATION of the frontend's partitioned-write base (R17.1 — which therefore
+  exists BEFORE this integration's writer is implemented): with compute **disabled** it MUST
+  return the base's **task graph of write tasks** — each writing its own output partition and
+  **reporting its part path** up the deterministic combine tree — **not** an array. With compute
+  **enabled** it MUST execute that same task graph through a real reference executor (R7): the
+  **process-pool executor by default**, with the thread-pool executor selectable. The two modes
+  MUST be consistent (the disabled mode's graph, when run, produces the enabled mode's outputs).
+  Partitions are BLIND (the driver opens no files; workers resolve and derive their own part
+  index from the partition alone, R15.9); part files follow the base's deterministic naming; a
+  step that resolves EMPTY (a file with fewer entries than the step count) is skipped — no empty
+  part files are written (part numbering MAY then have gaps in that corner case).
 - **R15.5 (Exercise the real deployable path.)** Integration analyses MUST be executed through the
   **reference executors of R7 (the process-pool executor)**, not through a direct in-process
   materialize shortcut, so the path under test is the path that ships. The per-partition work MUST be
@@ -682,11 +689,24 @@ behaviors → conveniences.
   part indices derived from the partition alone per R15.9), specialized per backend with ONLY the
   schema→form translation and the per-partition array codec. The arrow/parquet library is an
   OPTIONAL extra. Write tasks evaluate the COMPILED IR (R7.8), never a re-recorded session.
-- **R17.1.1 (The read list comes from the BUFFER projection.)** The ragged specialization's write
-  path MUST wire its per-task read list from the buffer-granular projection (R5.3): a
-  structure-only need (a multiplicity) reads its CHEAPEST CARRIER — one leaf at-or-under the
-  path, since parquet has no standalone counter column — the parquet analogue of R15.8. The
-  column view alone under-specifies this and MUST NOT be the wiring.
+- **R17.1.1 (The read list: syntactic accesses, buffer-refined.)** A writer's per-task read list
+  MUST cover every source field the recorded graph SYNTACTICALLY accesses — compiled-IR
+  evaluation replays every node, so a record-constructor's untouched legs (a zip whose only
+  consumed property is one derived quantity) must still be readable; the buffer projection alone
+  UNDER-SUPPLIES evaluation and MUST NOT be the sole wiring. Each accessed field is then refined
+  BY the buffer projection (R5.3): data needs read their leaves; a structure-only need reads its
+  CHEAPEST CARRIER — one leaf at-or-under the path, since parquet has no standalone counter
+  column (the parquet analogue of R15.8). The column view alone under-specifies structure; the
+  buffer view alone under-supplies evaluation; the wiring is their merge.
+- **R17.1.2a (The partitioned-source protocol; ONE generic writer.)** The write base MUST include
+  a read-side protocol — ``partitions(steps_per_file)`` returning BLIND partitions and
+  ``read_partition(partition, columns, resources)`` with open-once resources — that source DATA
+  objects implement, and the ragged backend's generic parquet writer MUST dispatch on it: any
+  reader integration's deferred arrays then write partition-wise through the SAME entry point
+  (``to_parquet(reader_array, ...)``) with NO integration-specific writer function and NO
+  whole-dataset materialization (witnessed: the source's whole-dataset loader is never invoked).
+  Behavior dicts MAY be forwarded to workers as an importable ``"module:attr"`` reference (they
+  often contain lambdas, which do not pickle).
 - **R17.1.2 (The rectilinear specialization refuses ragged data.)** The numpy backend's parquet
   surface accepts ONLY fixed-width primitive columns; a jagged/nested column is refused at
   construction with an error naming the column and pointing at the ragged backend. (This amends
@@ -829,3 +849,6 @@ interop, recorded attrs).
   a format with no standalone counter column — parquet's analogue of the counter branch (R17.1.1).
 - **Blind partitioning (parquet).** The R7.9 blind partition applied to parquet datasets: no file
   is opened at partition time; ranges resolve against metadata row counts at read time (R17.1).
+- **Partitioned-source protocol.** The write base's read-side protocol (R17.1.2a): a source data
+  object describes its own (blind) partitioning and reads one partition at a time, so generic
+  writers and partition-wise consumers never materialize a dataset through its lazy loader.

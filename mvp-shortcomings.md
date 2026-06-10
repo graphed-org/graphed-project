@@ -197,3 +197,8 @@ worth fixing now (details in `.graphed/tracking/torch-jit-deprecation.md`):
   Action trigger: torch announcing removal of `torch.jit` (or the matrix turning these into
   errors) → a recorded freeze amendment swaps the fixture to `torch.export` — a contained,
   one-file change whose content hashes change with the artifact format.
+- **compile_ir output accumulation (found 2026-06-10, P3.6 revision):** graph outputs accumulate
+  per session, so compiling two DIFFERENT expressions from one session yields a multi-output IR
+  and single-output consumers (`to_parquet`'s unpack) break. Workaround: one session per compiled
+  expression (pinned in graphed-awkward's m21 suite). A real fix needs output isolation in
+  compile_ir/GraphStore — future work, out of the P3.6 scope.
