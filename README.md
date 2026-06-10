@@ -60,7 +60,7 @@ the orchestrator refuses to record DONE off an unfinished CI run.
 | [graphed-corpus-mvp](https://github.com/graphed-org/graphed-corpus-mvp) | M0.5 requirements + fixtures | `e53f38a` | ✅ submodule |
 | [graphed-debug-mvp](https://github.com/graphed-org/graphed-debug-mvp) | M6 debug/tracebacks | `118ffb7` | ✅ submodule |
 | [graphed-exec-local-mvp](https://github.com/graphed-org/graphed-exec-local-mvp) | M7 reference executor | `d2dff5a` | ✅ submodule |
-| [graphed-numpy-mvp](https://github.com/graphed-org/graphed-numpy-mvp) | M2 trivial backend | `192a3b2` | ✅ submodule |
+| [graphed-numpy-mvp](https://github.com/graphed-org/graphed-numpy-mvp) | M2 trivial backend | `a0794e2` | ✅ submodule |
 | [graphed-orchestrator](https://github.com/graphed-org/graphed-orchestrator) | Part B deterministic orchestrator | `a5adff1` | ✅ submodule |
 | [graphed-preserve-mvp](https://github.com/graphed-org/graphed-preserve-mvp) | M9 preservation bundle | `20aa028` | ✅ submodule |
 
@@ -86,4 +86,4 @@ When guidance conflicts, the higher authority wins: **(1)** the project plan
 (`graphed-project-plan-gated.md`) always wins · **(2)** the root [`CLAUDE.md`](CLAUDE.md) · **(3)** a
 sub-repo's `CLAUDE.md` (local detail only).
 
-<sub>Generated from <code>.graphed/state.json</code> (updated 2026-06-10T18:36:34Z).</sub>
+<sub>Generated from <code>.graphed/state.json</code> (updated 2026-06-10T18:49:18Z).</sub>
