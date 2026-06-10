@@ -178,3 +178,22 @@ Notable scope decisions:
 - `_GraphedTTreeSource.__call__` still concatenates all files on a direct whole-dataset
   materialize — inherent to producing one in-memory array; the partitioned compiled-IR path is the
   supported large-data path (documented, not "fixed").
+
+---
+
+## Warning watch (added 2026-06-10, post M15–M19 — tracked, deliberately NOT fixed)
+
+Two warning sources exist across the ten repos' suites; both were investigated and judged not
+worth fixing now (details in `.graphed/tracking/torch-jit-deprecation.md`):
+
+- **graphed-awkward, 1 RuntimeWarning (divide by zero), m17 frozen suite.** Deliberate inf/NaN
+  input (`pt/(pt-pt)`) proving `gak.nan_to_num`; deterministic and self-documenting. Fixing means
+  amending a frozen test for cosmetics; suppressing via config or in the eval dispatch would mask
+  REAL numeric warnings. Leave as-is.
+- **graphed-preserve, 70 DeprecationWarnings (torch.jit.{trace,trace_method,save,load}),
+  m9 frozen suite, torch 2.12.** All from the TorchScript FIXTURE in
+  `tests/frozen/m9/test_ml_plugins.py`; production graphed-preserve imports no torch (the
+  externals-plugin machinery is format-generic; ONNX is the canonical model format per R10).
+  Action trigger: torch announcing removal of `torch.jit` (or the matrix turning these into
+  errors) → a recorded freeze amendment swaps the fixture to `torch.export` — a contained,
+  one-file change whose content hashes change with the artifact format.
