@@ -28,3 +28,6 @@
 [submodule "graphed-preserve"]
 	path = graphed-preserve
 	url = git@github.com:graphed-org/graphed-preserve-mvp.git
+[submodule "graphed-histogram"]
+	path = graphed-histogram
+	url = git@github.com:graphed-org/graphed-histogram.git
