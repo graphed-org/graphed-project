@@ -806,6 +806,15 @@ fill); it MUST be built BEFORE any analysis-benchmark port, as follows:
   The fork's CI runs the FULL hist suite alongside the integration tests (the R15.7 pattern).
   Pinned bit for bit against eager twins over the rectilinear backend, the ragged backend
   (ragged fills flatten completely), and a real reader TTree.
+- **R18.4a (Histogram fills are PRESERVABLE.)** The preservation package MUST carry a plugin
+  for the histogram External family: its payload IS the fill's canonical axes/storage spec
+  (the same bytes whose hash is the node's identity — pinned coherent across the seam),
+  SYNTHESIZED at build time from the node's own params via a generic plugin hook (callers
+  supply no bytes); its evaluator reconstructs the fill from those params. Bundles accept
+  HISTOGRAM-TERMINAL analyses directly — the preserved opt_level=0 IR ends at the fill, no
+  (value, weight, spec) triple — and reproduction returns the histogram itself, bit for bit;
+  re-running a preserved analysis reduces the IR first (the fill remains the terminal through
+  optimization, pinned) and may re-target new inputs through any executor.
 - **R18.5 (Out of scope.)** Growth axes; dask-style persist/delayed collection protocols
   (the durable artifact is the compiled IR / DurablePlan).
 
