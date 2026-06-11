@@ -30,4 +30,4 @@
 	url = git@github.com:graphed-org/graphed-preserve-mvp.git
 [submodule "graphed-histogram"]
 	path = graphed-histogram
-	url = git@github.com:graphed-org/graphed-histogram.git
+	url = git@github.com:graphed-org/graphed-histogram-mvp.git
