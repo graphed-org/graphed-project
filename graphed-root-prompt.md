@@ -844,6 +844,19 @@ fill); it MUST be built BEFORE any analysis-benchmark port, as follows:
   template is the legacy convention, byte-compatible and pinned: pre-existing bundles never
   change meaning. Shipped plugin evaluators are kind-resolved ENVIRONMENT contracts (bundles
   preserve payloads, never evaluator code), so evaluator changes MUST be additive.
+- **R18.4d (Producers emit what replay obeys.)** The packages that RECORD Externals are bound
+  to the same contracts as replay: recorder surfaces (`gak.apply_correction`,
+  `gak.onnx_inference`, `Histogram.fill`) emit the call template / signature params into the
+  node, and record-time evaluation MATERIALIZES THAT SAME TEMPLATE — record and replay agree
+  by construction, never by convention. Producer descriptors use the content-identity hash
+  conventions shared with preservation (canonical correction JSON; ONNX weights+structure) so
+  one payload has ONE identity across the seams and bundle integrity is passable from the
+  user-facing recording path; IR params carry no filesystem paths. Histogram fills accept
+  multiple multiplicative weights (`weight=[w1, w2, ...]` -> `n_weights`), with single-weight
+  node identity unchanged. Legacy recording paths stay byte-for-byte (frozen pins) and their
+  identity mismatch at bundle time fails LOUDLY. Cross-repo acceptance lives in the
+  preservation repo's frozen suite: record through the real user surface -> bundle integrity
+  -> reproduce bit-for-bit.
 - **R18.5 (Out of scope.)** Growth axes; dask-style persist/delayed collection protocols
   (the durable artifact is the compiled IR / DurablePlan).
 
