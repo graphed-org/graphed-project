@@ -172,6 +172,18 @@ in-process), which would give a false appearance of parity without testing what 
   backend dispatch count equal to the *reduced* operation count; a combine observed off the driver
   thread). Asserting only input/output equivalence for such a requirement is a test-sanity failure:
   an alias for the non-incremental path satisfies equivalence by construction (see Part I §5).
+- **R0.11 (Claims MUST be grounded in measured facts.)** Any performance, scaling, or
+  cost claim — in a report, a notebook narrative, documentation, an attempt log, or a commit
+  message — MUST be backed by a measurement taken in *that* context, not by intuition, analogy,
+  or a plausible-sounding decomposition. Naming a number (a per-task overhead, a speedup, a
+  byte count, an asymptotic class) obligates the measurement that produced it; if it has not
+  been measured, say so explicitly rather than inventing a figure. A benchmark narrative MUST
+  state its methodology (what was warmed, what was timed, what was held constant) so the number
+  is reproducible and falsifiable. This rule exists because a fabricated "≈40–80 ms per-task
+  overhead" was once written into a notebook to rationalize a disappointing speedup; the real,
+  measured figure was ~0.1 ms, and the true cause was a measurement artifact — the invented
+  number sent the diagnosis in the wrong direction. Measure first; if a claim cannot be
+  measured, it is a hypothesis and MUST be labeled one.
 
 ## R1 — System architecture and repository layout
 
@@ -370,6 +382,20 @@ in-process), which would give a false appearance of parity without testing what 
   read exactly once across a file's steps — and MUST survive pickling and the durable plan codec.
   Encoding "blind" by smuggling a sentinel through an unrelated field (for example a negative entry
   stop) is FORBIDDEN: any consumer unaware of the convention silently misreads the range.
+- **R7.10 (The process callable is delivered to workers ONCE, not per task.)** The compiled
+  artifact a worker runs (the process callable carrying the reduced IR bytes, evaluators, and
+  specs of R7.8) MUST be shipped to each process-pool worker **once and cached worker-side**,
+  not re-pickled and re-transmitted on every task submission — the default behavior of stock
+  task-submission APIs, which dedupe nothing and so move the whole IR per partition. The process
+  pool MUST broadcast the artifact to its workers (cached by content hash, so re-running a plan
+  or reusing a persistent pool across plans never re-ships it; a respawned pool re-primes), and
+  per-task messages MUST carry only a reference (the content hash) plus the partition. The
+  frozen suite MUST pin this with a mechanism witness (R0.10): the artifact is deserialized
+  **exactly once per worker** regardless of task count (e.g. a per-worker unpickle counter that
+  stays at 1 across many tasks), not once per task. The thread executor is exempt (shared
+  memory). Quantitatively this matters in proportion to artifact size × task count; do not
+  justify it with an unmeasured per-task figure (R0.11) — the witness is structural, the wire
+  saving is `(tasks − workers) × artifact_bytes`.
 
 ## R8 — Checkpoint, resume, and error harvesting
 
