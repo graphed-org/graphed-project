@@ -53,14 +53,14 @@ the orchestrator refuses to record DONE off an unfinished CI run.
 | Repo | Role | Pinned commit | State |
 |---|---|---|:--:|
 | [graphed-project-mvp](https://github.com/graphed-org/graphed-project-mvp) | meta/superproject | — | meta |
-| [graphed-mvp](https://github.com/graphed-org/graphed-mvp) | M2/M3 frontend | `739f9f2` | ✅ submodule |
-| [graphed-awkward-mvp](https://github.com/graphed-org/graphed-awkward-mvp) | M3/M5 reference backend | `669da24` | ✅ submodule |
+| [graphed-mvp](https://github.com/graphed-org/graphed-mvp) | M2/M3 frontend | `071a566` | ✅ submodule |
+| [graphed-awkward-mvp](https://github.com/graphed-org/graphed-awkward-mvp) | M3/M5 reference backend | `fc6daff` | ✅ submodule |
 | [graphed-checkpoint-mvp](https://github.com/graphed-org/graphed-checkpoint-mvp) | M8 checkpoint/resume | `641a4af` | ✅ submodule |
-| [graphed-core-mvp](https://github.com/graphed-org/graphed-core-mvp) | M1/M4/M7-contract/M8-plan | `525cb1c` | ✅ submodule |
+| [graphed-core-mvp](https://github.com/graphed-org/graphed-core-mvp) | M1/M4/M7-contract/M8-plan | `60f166c` | ✅ submodule |
 | [graphed-corpus-mvp](https://github.com/graphed-org/graphed-corpus-mvp) | M0.5 requirements + fixtures | `825e62a` | ✅ submodule |
 | [graphed-debug-mvp](https://github.com/graphed-org/graphed-debug-mvp) | M6 debug/tracebacks | `1359e41` | ✅ submodule |
 | [graphed-exec-local-mvp](https://github.com/graphed-org/graphed-exec-local-mvp) | M7 reference executor | `185233f` | ✅ submodule |
-| [graphed-numpy-mvp](https://github.com/graphed-org/graphed-numpy-mvp) | M2 trivial backend | `d3abe14` | ✅ submodule |
+| [graphed-numpy-mvp](https://github.com/graphed-org/graphed-numpy-mvp) | M2 trivial backend | `5cd8633` | ✅ submodule |
 | [graphed-orchestrator](https://github.com/graphed-org/graphed-orchestrator) | Part B deterministic orchestrator | `ba36446` | ✅ submodule |
 | [graphed-preserve-mvp](https://github.com/graphed-org/graphed-preserve-mvp) | M9 preservation bundle | `fe65e22` | ✅ submodule |
 
@@ -86,4 +86,4 @@ When guidance conflicts, the higher authority wins: **(1)** the project plan
 (`graphed-project-plan-gated.md`) always wins · **(2)** the root [`CLAUDE.md`](CLAUDE.md) · **(3)** a
 sub-repo's `CLAUDE.md` (local detail only).
 
-<sub>Generated from <code>.graphed/state.json</code> (updated 2026-06-13T12:06:46Z).</sub>
+<sub>Generated from <code>.graphed/state.json</code> (updated 2026-06-13T12:59:04Z).</sub>

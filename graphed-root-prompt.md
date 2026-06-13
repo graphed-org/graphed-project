@@ -208,6 +208,20 @@ in-process), which would give a false appearance of parity without testing what 
   also advances the recorded package revisions.
 - **R1.5** Each package MUST carry concise written guidance that defers to a single root guidance
   document, which in turn defers to this brief and the generated plan; the plan governs on conflict.
+- **R1.6 (A shared primitive lives at the layer it serves, not where it was first needed.)** A
+  utility used by more than one package, or by a layer broader than one module's concern, MUST be
+  placed in the lowest common layer that all its users already depend on — typically the
+  data-only **core** (the IR/plan/execution contract) — NOT in whichever feature module happened
+  to be its first caller. The anti-pattern, observed and corrected in this project: the
+  dependency-free **reference plan executor** was defined inside the frontend's *partitioned-write*
+  module merely because the write base was the first caller that needed to run a plan without the
+  local-execution package; histogram aggregation, preservation, and the benchmarks then all
+  imported their executor from a *write* module — a semantic inversion. A general execution
+  primitive belongs beside the **execution contract** in the core, where every consumer already
+  imports the contract. Concretely: if you are about to import X from a module whose name/purpose
+  is narrower than X's role, X is misplaced — move it down, do not add a cross-layer import. Such
+  a relocation MUST be a clean move (no compatibility re-export left behind to re-entrench the
+  inversion) with all consumers re-pointed.
 
 ## R2 — Techniques that MUST be used (do not hand-roll alternatives)
 
@@ -345,7 +359,12 @@ in-process), which would give a false appearance of parity without testing what 
 ## R7 — Execution layer
 
 - **R7.1** The core MUST own a minimal, data-only **execution contract** (executor, plan, task,
-  partition, stop-condition, result). Reference executors live in the local-execution package.
+  partition, stop-condition, result). The *pooled* reference executors (thread/process) live in the
+  local-execution package, but the **dependency-free, in-process reference runner** (key-ordered
+  fold over a plan, the canonical baseline) MUST live beside the contract in the core, since
+  layers that may not depend on the local-execution package (the frontend's writers, histogram
+  aggregation, preservation, the benchmarks) still need to run a plan — placing it anywhere
+  narrower violates R1.6.
 - **R7.2 (Both executors required.)** The reference package MUST provide **both a thread-pool executor
   and a process-pool executor** behind one contract.
 - **R7.3** A plan MUST reduce to a single result via a **deterministic, straggler-tolerant tree
