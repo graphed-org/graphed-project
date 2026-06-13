@@ -857,6 +857,18 @@ fill); it MUST be built BEFORE any analysis-benchmark port, as follows:
   identity mismatch at bundle time fails LOUDLY. Cross-repo acceptance lives in the
   preservation repo's frozen suite: record through the real user surface -> bundle integrity
   -> reproduce bit-for-bit.
+- **R19.6 (Phase 2: the speedup-audit follow-ups — do NOT build in the MVP.)** Two
+  improvements identified by the notebook performance audit are explicitly Phase 2:
+  (a) **driver/executor pipelining** — an async submit on the executors so plan N executes
+  while the driver records/compiles plan N+1, hiding the serial recording fraction that
+  otherwise Amdahl-caps multi-query passes; (b) **basket-aligned partitioning** — the reader
+  derives chunk boundaries from basket boundaries instead of fixed entry counts, eliminating
+  redundant whole-basket decompression (a single-basket file re-decompresses everything per
+  chunk; measured to inflate sequential work ~linearly with chunk count and to manufacture
+  fake parallel speedups). Until then: benchmark methodology REQUIRES compile-outside-the-
+  timed-region, a separate-file pool warm-up, combined single-pass plans for multi-query
+  timing (per-plan runs give pool workers cross-plan cache reuse the sequential runner lacks),
+  and one task per basket-sparse small file.
 - **R18.5 (Out of scope.)** Growth axes; dask-style persist/delayed collection protocols
   (the durable artifact is the compiled IR / DurablePlan).
 
